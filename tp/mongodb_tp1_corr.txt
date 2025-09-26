@@ -1,0 +1,12 @@
+db.eleves.insert({nom : "Granger", prenom : "Hermione"})
+
+for(i=1; i<=100000; i++){ var dixmill = i%10000; var mill = i%1000; var cent = i%100; db.produits.insert({compteur:i, dixmill:dixmill, mill:mill, cent:cent });};
+
+
+db.eleves.insert({nom:"Weasley", prenom : "Ronald", classe : "seconde"})
+db.eleves.insert({nom:"Londubat", prenom:"Neville", classe:"première", age:17})
+db.eleves.update({prenom:"Hermione"},{$set : {classe:"première"}})
+db.eleves.update({prenom:"Neville"},{$set : {age:18}})
+db.eleves.find({age:{$gte:16}})
+db.eleves.find({classe:"première"})
+
