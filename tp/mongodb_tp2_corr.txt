@@ -1,0 +1,60 @@
+exo 1
+use info
+
+exo 2
+db.produits.insert({nom:"Macbook Pro",fabriquant:"Apple", prix:1299.99, options:["intel Core i5","Retina Display","Long life battery"]})
+db.produits.insert({nom:"Macbook Air",fabriquant:"Apple", prix:1099.99, ultrabook:true, options:["intel Core i7","SSD","Long life battery"]})
+db.produits.insert({nom:"Thinkpad x230",fabriquant:"Lenovo", prix:999.99, ultrabook:true, options:["intel Core i5","SSD","Long life battery"]})
+
+exo 3
+db.produits.find()
+db.produits.find()[0]
+db.produits.find({nom:"Thinkpad x230"})
+db.produits.find({nom:"Macbook Air"}, {_id:1})
+db.produits.find({prix:{$gt:1200}})
+db.produits.findOne({ultrabook:true})
+db.produits.findOne({nom:/Macbook/})
+db.produits.find({nom:/^Macbook/})
+
+exo 4
+db.produits.remove({fabriquant:"Apple"})
+db.produits.findOne({nom:"Thinkpad x230"}, {_id:1})
+db.produits.remove({_id:ObjectId("")})
+
+exo 5
+db.factures.insert({numero:"10013A", date:"2013-07-05", client:{nom:"Jacques Berger", courriel:"berger.jacques@uqam.ca"}, produits:[{code:"LENOVOX230", nom:"Lenovo Thinkpad x230", prix:899.99, qt:1}],total:899.99})
+db.factures.insert({numero:"10012A", date:"2013-07-04", client:{nom:"Alexandre Terrasa", courriel:"foobar@example.com"}, produits:[{code:"MACBOOKAIR", nom:"Macbook Air", prix:999.99, qt:1}, {code:"APPLESUPPORT", nom:"AppleCard 1 an", prix:149.99, qt:1}],total:1149.98})
+
+db.factures.find({"numero":"10013A"})
+db.factures.update({numero:"10013A"},{$set:{date:"2018-07-03", "client.courriel": 'alex@example.com'}})
+db.factures.find({"produits.code":"LENOVOX230"})
+db.factures.remove({"numero":"10012A"})
+
+exo 6
+use avis
+db.createCollection("films")
+
+avec un conteneur Mongo : 
+docker cp movies.json mongodb:/movies.json
+docker exec mongodb mongoimport -u root -p pass12345 --authenticationDatabase admin --db avis --collection films --file movies.json
+
+db.films.find({}, {"title": 1})
+
+db.films.find({"year": {$gt: 2000}}, {"title": 1, "year": 1})
+
+db.films.find({"title": "Spider-Man"}, {"summary": 1})
+
+db.films.find({"title": "Gladiator"}, {"director": 1})
+
+db.films.find({"actors.last_name": "Dunst"}, {"title": 1})
+
+db.films.find({"summary": {$exists: true}}, {"title": 1})
+
+NB: cette fonction regarde si le champ existe, pas s’il est vide ou non. Dans la base, il existe des films avec un résumé ayant pour valeur null. Afin de ne récupérer que les films ayant réellement un résumé, on peut ajouter $ne:null
+db.films.find({"summary": {$exists: true, $ne:null}}, {"title": 1, "summary":1})
+
+db.films.find({"genre": {$nin: ["drama", "Comédie"]}}, {"title": 1, "genre": 1})
+
+db.films.find({}, {"title": 1, "actors.first_name": 1, "actors.last_name": 1})
+
+t
