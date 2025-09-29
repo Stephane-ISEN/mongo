@@ -1,0 +1,50 @@
+
+db.posts.insert({createdDate: new Date("2016-01-18"), author: "Loutre joyeuse", title: "D'accord", content: "Mais", comments: [{date: new Date("2016-01-20"), writer: "Tortue géniale", msg: "Pas d'accord" }]})
+db.posts.insert({createdDate: new Date("2016-01-18"), author: "Bison futé", title: "d'accord", content:"Ou", comments:[{date: new Date("2016-01-20"), writer: "Tortue géniale", msg: "Pas d'accord"}, {date : new Date("2016-01-21"), writer: "Loutre joyeuse", msg:"D'accord"}]})
+db.posts.insert({createdDate: new Date("2016-03-18"), author: "Loutre joyeuse", title: "Pas d'accord", content: "Et", comments:[{date: new Date("2016-03-20"), writer: "Tortue géniale", msg: "Pas d'accord"},{date: new Date("2016-03-21"), writer: "Loutre joyeuse", msg: "Pas d'accord"}]})
+db.posts.insert({createdDate: new Date("2017-01-18"), author:"Tortue géniale",title:"Pas d'accord", content: "Donc"})
+db.posts.insert({createdDate: new Date("2017-01-18"), author: "Loutre joyeuse", title : "Pas d'accord", content: "Or", comments: [{date: new Date("2017-01-20"), writer: "Bison futé", msg: "D'accord"}, {date: new Date("2017-01-21"), writer: "Tortue géniale", msg: "Pas d'accord"}, {date: new Date("2017-01-22"), writer: "Loutre joyeuse", msg: "pas d'accord"}]})
+
+
+
+Index
+
+exercice 1
+db.posts.createIndex({author:1});
+
+exercice 2
+db.posts.createIndex({createdDate:-1});
+
+exercice 3
+db.posts.createIndex({title:1, createdDate:-1});
+db.posts.find({title: "Pas d'accord"});
+
+exercice 4
+db.posts.getIndexes();
+
+Agrégation
+
+exercice 1
+db.posts.aggregate({$group: {_id:"$author", nb:{$sum: 1}}});
+
+exercice 2
+db.posts.aggregate({$group: {_id: "$author", posts: {$push:{createdDate: "$createdDate", title : "$title"}}}});
+
+exercice 3
+db.posts.aggregate({$group:{_id:{month:{$month: "$createdDate"}, year: {$year: "$createdDate"}}, nb: {$sum: 1}}});
+
+exercice 4
+db.posts.aggregate({$match:{author:"Loutre joyeuse"}},{$group: {_id:"$author", nb:{$sum:1}}});
+
+exercice 5
+db.posts.aggregate({$unwind: "$comments"});
+
+exercice 6
+db.posts.aggregate({$unwind: "$comments"},{$group: {_id:"$_id", nb:{$sum:1}}});
+
+exercice 7
+db.posts.aggregate({$unwind: "$comments"},{$group: {_id:"$author", nb:{$sum:1}}});
+
+exercice 8
+db.posts.aggregate({$match:{author:"Loutre joyeuse"}},{$unwind:"$comments"},{$sort:{date:-1}},{$group:{_id:{title:"$title", date:"$createdDate"}, comments:{$push: "$comments"}}},{$sort:{createdDate:1}});
+
